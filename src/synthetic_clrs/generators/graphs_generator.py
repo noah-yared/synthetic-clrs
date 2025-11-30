@@ -20,32 +20,50 @@ class GraphsGenerator(ProblemGenerator):
         return symmetric_grid
         
 
-    def _generate_random_edge_weights(self, num_edges, weighted, only_positive_weights=False):
+    def _generate_random_edge_weights(self, num_edges, directed, weighted, only_positive_weights):
+        # edge weights are duplicated for both edge directions
+        # in undirected graphs so only need to generate num_edges // 2
+        # random weights
+        num_weights = num_edges // 2 if not directed else num_edges
         if weighted:
             return self.rng.gen_int_array(
-                num_edges,
+                num_weights,
                 # make sure weights are strictly positive if only_positive_weights=True
                 1 if only_positive_weights else self.min_weight, 
                 self.max_weight
             )
         else:
-            return [1] * num_edges
+            return [1] * num_weights
 
 
-    def _get_edge_weights(self, adj_matrix, directed=True, weighted=True, only_positive_weights=False):
-        num_vertices = len(adj_matrix)
-        edges = []
-        for i in range(num_vertices):
-            for j in range(num_vertices):
-                # (i, j) is same edge as (j, i)
-                # so only consider (i, j) for i < j
-                if j > i and not directed: 
-                    continue
-                edges.append((i, j))
+    def _get_edge_weights(self, edges=None, adj_matrix=None, directed=True, weighted=True, only_positive_weights=False):
+        if edges is None:
+            num_vertices = len(adj_matrix)
+            edges = [
+                (i, j)
+                for i in range(num_vertices)
+                for j in range(num_vertices)
+                if adj_matrix[i][j]
+            ]
 
-        weights = self._generate_random_edge_weights(len(edges), weighted, only_positive_weights)
+        weights = self._generate_random_edge_weights(len(edges), directed, weighted, only_positive_weights)
 
-        return list(zip(edges, weights))
+        if directed:
+            return list(zip(edges, weights))
+
+        # assign same edge weight to both edge directions
+        # for undirected graphs
+        assigned = set()
+        edge_list = []
+        for u, v in edges:
+            e = tuple(sorted([u, v]))
+            if e in assigned:
+                continue
+            random_weight = weights[len(assigned)]
+            edge_list.append(((u, v), random_weight))
+            edge_list.append(((v, u), random_weight))
+
+        return edge_list
 
 
     def _gen_random_edges_from_topo_order(self, topo_order):
@@ -62,19 +80,19 @@ class GraphsGenerator(ProblemGenerator):
     def _generate_random_undirected_graph(self, num_vertices, weighted, only_positive_weights):
         random_bool_grid = self.rng.gen_bool_grid(num_vertices, num_vertices)
         symmetric_adj_matrix = self.copy_bottom_left_tri_to_top_right_tri(random_bool_grid)
-        return self._get_edge_weights(symmetric_adj_matrix, directed=False, weighted=weighted, only_positive_weights=only_positive_weights)
+        return self._get_edge_weights(adj_matrix=symmetric_adj_matrix, directed=False, weighted=weighted, only_positive_weights=only_positive_weights)
 
 
     def _generate_random_directed_graph(self, num_vertices, weighted, only_positive_weights):
         adj_matrix = self.rng.gen_bool_grid(num_vertices, num_vertices)
-        return self._get_edge_weights(adj_matrix, directed=True, weighted=weighted, only_positive_weights=only_positive_weights)
+        return self._get_edge_weights(adj_matrix=adj_matrix, directed=True, weighted=weighted, only_positive_weights=only_positive_weights)
 
 
     def _generate_random_dag(self, num_vertices, weighted, only_positive_weights):
         random_topo_order = list(range(num_vertices))
         random.shuffle(random_topo_order)
         adj_matrix = self._gen_random_edges_from_topo_order(random_topo_order)
-        return self._get_edge_weights(adj_matrix, directed=True, weighted=weighted, only_positive_weights=only_positive_weights)
+        return self._get_edge_weights(adj_matrix=adj_matrix, directed=True, weighted=weighted, only_positive_weights=only_positive_weights)
 
     
     def _generate_random_tree(self, num_vertices, weighted, only_positive_weights):
@@ -107,14 +125,12 @@ class GraphsGenerator(ProblemGenerator):
                 # so skip this edge
                 continue
             parent[v] = u
-            # trees are undirected so add both
-            # directions
+            # add both directions of edge
+            # since trees are undirected
             edges.append((u, v))
             edges.append((v, u))
-                
-        weights = self._generate_random_edge_weights(len(edges), weighted, only_positive_weights=only_positive_weights)
-
-        return list(zip(edges, weights))
+ 
+        return self._get_edge_weights(edges=edges, directed=False, weighted=weighted, only_positive_weights=only_positive_weights)
 
 
     def generate(self, tree=False, acyclic=False, directed=False, weighted=False, only_positive_weights=False, include_src=False):
