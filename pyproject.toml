@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synthetic_clrs"
+version = "0.1.0"
+description = "Generate synthetic algorithm problems inspired by CLRS"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=2.0" 
+]
+authors = [
+    {name = "Noah Yared"}
+]
+maintainers = [
+    {name = "Noah Yared"}
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.urls]
+Repository = "https://github.com/noah-yared/synthetic-clrs.git"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff.lint]
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes (unused imports, etc.)
+    "W",  # pycodestyle warnings
+    "B",  # flake8-bugbear (common bugs)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["synthetic_clrs"]
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests"]
