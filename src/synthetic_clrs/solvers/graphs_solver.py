@@ -23,6 +23,7 @@ class GraphsSolver:
         return graph
 
 
+    @staticmethod
     def _compute_topological_ordering(edges, num_vertices):
         """
         Returns topological ordering if one exists, otherwise
@@ -59,12 +60,12 @@ class GraphsSolver:
 
 
     @staticmethod
-    def _articulation_points_solver(edges, num_vertices):
+    def articulation_points(edges, num_vertices):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
     @staticmethod
-    def _bellman_ford_solver(edges, num_vertices, src):
+    def bellman_ford(edges, num_vertices, src):
         """
         Prefer graphs without negative cycles to
         avoid issues with encoding infinite
@@ -88,7 +89,7 @@ class GraphsSolver:
         return d
 
 
-    def _bfs_solver(edges, num_vertices, src):
+    def bfs(edges, num_vertices, src):
         """
         For deteministic traversal, input graph
         should be a tree.
@@ -117,11 +118,11 @@ class GraphsSolver:
         return parents
 
 
-    def _bridges_solver(edges, num_vertices):
+    def bridges(edges, num_vertices):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def _dag_shortest_paths_solver(edges, num_vertices, src):
+    def dag_shortest_paths(edges, num_vertices, src):
         """
         Input graph must be a directed, acyclic graph (dag).
         """
@@ -143,7 +144,7 @@ class GraphsSolver:
         return d
 
 
-    def _dfs_solver(edges, num_vertices, src):
+    def dfs(edges, num_vertices, src):
         """
         For deterministic traversal, input graph
         should be a tree.
@@ -172,7 +173,7 @@ class GraphsSolver:
         return parents
 
 
-    def _dijkstra_solver(edges, num_vertices, src):
+    def dijkstra(edges, num_vertices, src):
         """
         Prefer graphs where src can reach all other
         vertices to avoid issues with encoding infinite
@@ -191,45 +192,29 @@ class GraphsSolver:
             w, (u, v) = heapq.heappop(edges)
             d[v] = min(d[u] + w, d[v])
             for child, w in graph[v]:
+                if d[child] != float('inf'):
+                    # already found shortest path to child
+                    continue
                 heapq.heappush(edges, (w, (v, child)))
         
         return d
 
 
-    def _floyd_warshall_solver(edges, num_vertices):
+    def floyd_warshall(edges, num_vertices):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def _mst_kruskal_solver(edges, num_vertices):
+    def mst_kruskal(edges, num_vertices):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def _mst_prim_solver(edges, num_vertices):
+    def mst_prim(edges, num_vertices):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def _scc_solver(edges, num_vertices):
+    def scc(edges, num_vertices):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def _topological_sort_solver(edges, num_vertices):
+    def topological_sort(edges, num_vertices):
         return GraphsSolver._compute_topological_ordering(edges, num_vertices)
-
-
-    def solve(id, **kwargs):
-        solvers = [
-            GraphsSolver._articulation_points_solver,
-            GraphsSolver._bellman_ford_solver,
-            GraphsSolver._bfs_solver,
-            GraphsSolver._bridges_solver,
-            GraphsSolver._dag_shortest_paths_solver,
-            GraphsSolver._dfs_solver,
-            GraphsSolver._dijkstra_solver,
-            GraphsSolver._floyd_warshall_solver,
-            GraphsSolver._mst_kruskal_solver,
-            GraphsSolver._mst_prim_solver,
-            GraphsSolver._scc_solver,
-            GraphsSolver._topological_sort_solver,
-        ]
-        assert 0 <= id < len(solvers), "id is out of range!"
-        return solvers[id](**kwargs)

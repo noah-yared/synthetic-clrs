@@ -1,14 +1,13 @@
 class DivideConquerSolver:
-    def __init__(self):
-        pass
-
-    
     @staticmethod
-    def _max_subarray_solver(arr):
+    def kadane(arr):
         if not arr:
             raise ValueError(f"Input {arr} is empty!")
 
         def best_cross_subarray(i, j):
+            if i == j:
+                return (i, j), arr[i]
+
             mid = (i + j) // 2
 
             # initialize to smallest cross subarray
@@ -20,7 +19,7 @@ class DivideConquerSolver:
             for l in range(mid - 1, -1, -1):
                 cross_sum_so_far += arr[l]
                 if cross_sum_so_far > curr_best_cross_sum:
-                    curr_best_cross_sum += cross_sum_so_far
+                    curr_best_cross_sum = cross_sum_so_far
                     curr_best_cross_range = (l, curr_best_cross_range[1])
 
             # extend right to maximize cross subarray sum
@@ -28,7 +27,7 @@ class DivideConquerSolver:
             for r in range(mid + 2, j + 1):
                 cross_sum_so_far += arr[r]
                 if cross_sum_so_far > curr_best_cross_sum:
-                    curr_best_cross_sum += cross_sum_so_far
+                    curr_best_cross_sum = cross_sum_so_far
                     curr_best_cross_range = (curr_best_cross_range[0], r)
 
             return curr_best_cross_range, curr_best_cross_sum
@@ -51,12 +50,3 @@ class DivideConquerSolver:
         subarray_range, _ = subproblem(0, len(arr) - 1)
 
         return subarray_range
-
-
-    @staticmethod
-    def solve(id, **kwargs):
-        solvers = [
-            DivideConquerSolver._max_subarray_solver
-        ]
-        assert 0 <= id < len(solvers), "id is out of range!"
-        return solvers[i](**kwargs)

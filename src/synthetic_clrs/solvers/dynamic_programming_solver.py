@@ -1,14 +1,11 @@
 class DynamicProgrammingSolver:
-    def __init__(self):
-        pass
-
-    
     @staticmethod
-    def _matrix_chain_solver():
+    def matrix_chain_order(matrices):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def _lcs_length_solver(a, b):
+    @staticmethod
+    def lcs_length(a, b):
         len_a, len_b = tuple(map(len, (a, b)))
         
         # initialize dp table (add dummy row/column 0 to avoid index errors)
@@ -27,19 +24,33 @@ class DynamicProgrammingSolver:
         return dp, dp[len_a][len_b]
 
 
-    def _optimal_bst_solver(ps, qs):
+    @staticmethod
+    def optimal_bst(ps, qs):
+        if not ps:
+            raise ValueError(f"Key probabilities {ps} is empty!")
+        
+        if len(ps) != len(qs) - 1:
+            raise ValueError(f"Length of key probabilities {ps} must be one less than the length of the gap probabilities {qs}!")
+
         num_keys = len(ps)
 
         # initialize dp table (1-indexed)
-        dp = [[0 for i in range(num_keys + 1)] for j in range(num_keys + 1)]
+        dp = [[0 for i in range(num_keys + 2)] for j in range(num_keys + 2)]
 
         # fill base cases
-        for i in range(num_keys):
-            dp[i+1][i] = qs[i] # probability target is in gap between keys i, i+1
+        for i in range(num_keys + 1):
+            # use the probability that target
+            # is in gap between keys i, i+1
+            dp[i+1][i] = qs[i] 
 
-        # fill in dp table
-        for i in range(1, num_keys + 1):
-            for j in range(i, num_keys + 1):
+        # fill in dp table in bottom-up manner
+        # by considering subproblems with smaller
+        # subtree sizes before larger ones so that
+        # we can directly use previously computed
+        # subproblem solutions
+        for sub_tree_size in range(1, num_keys + 1):
+            for i in range(1, num_keys - sub_tree_size + 2):
+                j = i + sub_tree_size - 1
                 w_ij = sum((ps[k] for k in range(i - 1, j))) \
                      + sum((qs[k] for k in range(i - 1, j + 1)))
                 dp[i][j] = min([
@@ -49,14 +60,3 @@ class DynamicProgrammingSolver:
         
         # return full dp table and the answer
         return dp, dp[1][num_keys]
-
-
-    @staticmethod
-    def solve(id, **kwargs):
-        solvers = [
-            DynamicProgrammingSolver._matrix_chain_solver,
-            DynamicProgrammingSolver._lcs_length_solver,
-            DynamicProgrammingSolver._optimal_bst_solver,
-        ]
-        assert 0 <= id < len(solvers), "id is out of range!"
-        return solvers[id](**kwargs)

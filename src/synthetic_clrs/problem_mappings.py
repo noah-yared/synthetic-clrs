@@ -1,10 +1,13 @@
 from types import MappingProxyType
 from dataclasses import dataclass
 
+from .algorithms import Algorithm
+
 # use immutable dataclass for mapped problem
 # type space to avoid spelling bugs below
 @dataclass
-class ProblemType: # readonly problem types
+class Category:
+    """Algorithm category constants."""
     __slots__ = ()
     DIVIDE_CONQUER = "divide_and_conquer"
     DYNAMIC_PROGRAMMING = "dynamic_programming"
@@ -15,32 +18,43 @@ class ProblemType: # readonly problem types
     SORTING = "sorting"
     STRINGS = "strings"
 
-PROBLEM_TYPES = tuple([
-    ProblemType.DIVIDE_CONQUER,
-    ProblemType.DYNAMIC_PROGRAMMING,
-    ProblemType.GEOMETRY,
-    ProblemType.GRAPHS,
-    ProblemType.GREEDY,
-    ProblemType.SEARCH,
-    ProblemType.SORTING,
-    ProblemType.STRINGS,
-])
-
-PROBLEM_MAPPING = {
-    ProblemType.GREEDY: ['activity_selector', 'task_scheduling'],
-    ProblemType.GRAPHS: [
-        'articulation_points','bellman_ford', 'bfs', 'bridges',
-        'dag_shortest_paths', 'dfs', 'dijkstra', 'floyd_warshall',
-        'mst_kruskal', 'mst_prim', 'strongly_connected_components',
-        'topological_sort'
+ALGORITHMS_BY_CATEGORY = MappingProxyType({
+    Category.GREEDY: [
+        Algorithm.ACTIVITY_SELECTION,
+        Algorithm.TASK_SCHEDULING
     ],
-    ProblemType.SEARCH: ['binary_search', 'minimum', 'quickselect'],
-    ProblemType.SORTING: ['bubble_sort', 'heapsort', 'insertion_sort', 'quicksort'],
-    ProblemType.DIVIDE_CONQUER: ['find_maximum_subarray_kadane'],
-    ProblemType.GEOMETRY: ['graham_scan', 'jarvis_march', 'segments_intersect'],
-    ProblemType.STRINGS: ['kmp_matcher', 'naive_string_matcher'],
-    ProblemType.DYNAMIC_PROGRAMMING: ['lcs_length', 'matrix_chain_order', 'optimal_bst']
-}
-
-if __name__ == "__main__":
-    pass
+    Category.GRAPHS: [
+        Algorithm.BELLMAN_FORD,
+        Algorithm.BFS,
+        Algorithm.DAG_SHORTEST_PATH,
+        Algorithm.DFS,
+        Algorithm.DIJKSTRA,
+        Algorithm.TOPOLOGICAL_SORT
+    ],
+    Category.SEARCH: [
+        Algorithm.BINARY_SEARCH,
+        Algorithm.MINIMUM
+    ],
+    Category.SORTING: [
+        Algorithm.BUBBLE_SORT,
+        Algorithm.HEAPSORT,
+        Algorithm.INSERTION_SORT,
+        Algorithm.QUICKSORT
+    ],
+    Category.DIVIDE_CONQUER: [
+        Algorithm.KADANE
+    ],
+    Category.GEOMETRY: [
+        Algorithm.GRAHAM_SCAN,
+        Algorithm.JARVIS_MARCH,
+        Algorithm.SEGMENT_INTERSECT
+    ],
+    Category.STRINGS: [
+        Algorithm.KMP_MATCHER,
+        Algorithm.NAIVE_STRING_MATCHER
+    ],
+    Category.DYNAMIC_PROGRAMMING: [
+        Algorithm.LCS_LENGTH,
+        Algorithm.OPTIMAL_BST
+    ],
+})

@@ -1,50 +1,57 @@
 class StringsSolver:
-    def _kmp_match_solver(text, pat):
+    @staticmethod
+    def kmp_matcher(text, pattern):
+        if not pattern:
+            raise ValueError(f"Pattern {pattern} is empty!")
+
         def compute_lps():
             # lps[i] denotes the length of the
-            # longest proper prefix of pat[0..i]
-            # that is also a proper suffix of pat[0..i]
+            # longest proper prefix of pattern[0..i]
+            # that is also a proper suffix of pattern[0..i]
             # 
             # note: proper prefix/suffix excludes the
-            # full substring pat[0..i]
-            lps = [0 for _ in range(len(pat))]
-            for i in range(1, len(pat)):
-                if pat[i] == pat[lps[i-1]]:
+            # full substring pattern[0..i]
+            lps = [0 for _ in range(len(pattern))]
+            for i in range(1, len(pattern)):
+                if pattern[i] == pattern[lps[i-1]]:
                     lps[i] += 1
                 else:
                     lps[i] = 0
             return lps
+        
+        # compute longest proper prefix suffix array
+        lps = compute_lps()
 
         i, j = 0, 0
         while i < len(text):
-            # return index of first
-            # full pattern match
-            if j == len(pat):
-                return i - len(pat)
-
-            if text[i] == pat[j]:
+            if text[i] == pattern[j]:
                 i += 1
                 j += 1
             elif j > 0:
+                # failed so backtrack
                 i -= j - lps[j-1] - 1
                 j = lps[j-1]
             else:
                 # failed at start of pattern
                 # so just increment text ptr
                 i += 1
+
+            # return index of first
+            # full pattern match
+            if j == len(pattern):
+                return i - len(pattern)
         
         return -1
 
 
-    def _naive_string_match_solver(text, pat):
+    @staticmethod
+    def naive_string_matcher(text, pattern):
+        if not pattern:
+            raise ValueError(f"Pattern {pattern} is empty!")
+
         i, j = 0, 0
         while i < len(text):
-            # return index of first
-            # full pattern match
-            if j == len(pat):
-                return i - len(pat)
-            
-            if text[i] == pat[j]:
+            if text[i] == pattern[j]:
                 i += 1
                 j += 1
             else:
@@ -53,14 +60,11 @@ class StringsSolver:
                 # start index
                 i -= j - 1
                 j = 0
+
+            # return index of first
+            # full pattern match
+            if j == len(pattern):
+                return i - len(pattern)
+            
         
         return -1
-
-
-    def _solve(id, **kwargs):
-        solvers = [
-            StringsSolver._kmp_match_solver,
-            StringsSolver._naive_string_match_solver
-        ]
-        assert 0 <= id < len(solvers), "id is out of range!"
-        return solvers[id](**kwargs)
