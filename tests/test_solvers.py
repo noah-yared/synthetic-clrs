@@ -171,20 +171,22 @@ TEST_SEGMENT_INTERSECT_INPUTS = [
     (([0, 2, 0, 2], [0, 2, 2, 0]), 1),
     # diagonal intersection
     (([-1, 1, -1, 1], [-1, 1, 1, -1]), 1),
-    # no intersection
-    (([0, 1, 2, 3], [0, 1, 2, 3]), 0),
     # parallel segments
     (([0, 1, 2, 3], [0, 1, 0, 1]), 0),
     # segments would intersect if extended but dont touch
-    (([0, 2, 1, 2], [0, 2, 1, 0]), 0),
-    # segments touch but dont intersect
-    (([0, 2, 1, 1], [0, 0, 0, 2]), 0),
-    # segments share endpoint but dont intersect
-    (([0, 1, 1, 2], [0, 1, 1, 0]), 0),
+    (([0, 2, 1/2, 2], [0, 2, -1/2, 0]), 0),
+    # endpoint of a segment is on another segment
+    (([0, 2, 1, 1], [0, 0, 0, 2]), 1),
+    # segments share endpoint
+    (([0, 1, 1, 2], [0, 1, 1, 0]), 1),
+    # collinear segments, dont touch
+    (([0, 1, 2, 3], [0, 1, 2, 3]), 0),
     # collinear segments, one endpoint inside other
-    (([0, 2, 1, 3], [0, 2, 1, 3]), 0),
+    (([0, 2, 1, 3], [0, 2, 1, 3]), 1),
     # collinear segments, both endpoints inside other
-    (([0, 3, 1, 2], [0, 3, 1, 2]), 0),
+    (([0, 3, 1, 2], [0, 3, 1, 2]), 1),
+    # duplicate segment
+    (([0, 1, 0, 1], [0, 1, 0, 1]), 1),
 ]
 @pytest.mark.parametrize("test_input, expected_output", TEST_SEGMENT_INTERSECT_INPUTS)
 def test_segment_intersect(test_input, expected_output):

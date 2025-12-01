@@ -134,7 +134,49 @@ class GeometrySolver:
 
     @staticmethod
     def segment_intersect(xs, ys):
-        # algorithm adopted from:
+        """
+        Define line segment s_0 by endpoints p[0], p[1]
+        and line segment s_1 by endpoints p[2], p[3],
+        where p = list(zip(xs, ys)).
+
+        Neither segment s_0 nor s_1 should have identical
+        endpoints
+        
+        Returns 1 if segments share a single point, otherwise
+        0.
+        """
+        def does_point_lie_on_segment(p, seg):
+            # sort endpoints left to right
+            p_0, p_1 = tuple(sorted(seg, key=lambda x: x[0]))
+
+            if not(p_0[0] <= p[0] <= p_1[0]):
+                # point doesnt lie between segment endpoints
+                # so cannot lie on segment
+                return False
+
+            # check equality of slope between p_0, p and
+            # between p, p_1; also handles extreme case of 
+            # p == p_0, since expression reduces to:
+            # 0 * x == 0 * y -> True
+            return (
+                (p[1] - p_0[1]) * (p_1[0] - p_0[0]) == (p_1[1] - p_0[1]) * (p[0] - p_0[0])
+            )
+
+        # handle special case where endpoint of a segment
+        # touches the other segment
+        ps = list(zip(xs, ys))
+        if any(
+            # bit-twiddling below used to concisely map
+            # i in {0, 1} => 2 and i in {2, 3} => 0,
+            # i.e. the start index of the segment
+            # that point (xs[i], ys[i]) is not in
+            does_point_lie_on_segment(p, (ps[x:=(i&(~1)^(2))], ps[x+1]))
+            for i, p in enumerate(zip(xs, ys))
+        ):
+            return 1
+
+        # handle general case of segment intersection below
+        # the following algorithm is adopted from:
         # https://github.com/vlecomte/cp-geo
         a, b, c, d = list(zip(xs, ys))
 
