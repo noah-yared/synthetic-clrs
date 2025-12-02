@@ -328,6 +328,25 @@ def test_dag_shortest_paths(test_input, expected_output):
     distances = ProblemSolver.solve(Algorithm.DAG_SHORTEST_PATH, edge_list=edges, num_vertices=num_vertices, src=src)
     assert distances == expected_output
 
+def test_dag_shortest_path_regression():
+    # 3 <- 1 -> 2 -> 0
+    test_dag = (
+        (
+            (
+                (1, 2, 3),
+                (1, 3, 4),
+                (2, 0, 2)
+            ),
+            4,
+            1,
+        ),
+        [5, 0, 3, 4]
+    )
+
+    (edges, num_vertices, src), expected_distances = test_dag
+    distances = ProblemSolver.solve(Algorithm.DAG_SHORTEST_PATH, edge_list=edges, num_vertices=num_vertices, src=src)
+    assert distances == expected_distances
+
 TEST_GRAPH_INPUTS_ONLY_POSITIVE_WEIGHTS = [
     # single vertex
     ((), 1, 0),

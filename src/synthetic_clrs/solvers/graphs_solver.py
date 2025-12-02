@@ -130,6 +130,8 @@ class GraphsSolver:
     def dag_shortest_paths(edge_list, num_vertices, src, **_):
         """
         Input graph must be a directed, acyclic graph (dag).
+        For dataset generation, src must be able to reach all other
+        vertices in graph to avoid infinite distances in output.
         """
         graph = GraphsSolver._construct_graph_from_input(edge_list, num_vertices)
         topo_order = GraphsSolver._compute_topological_ordering(edge_list, num_vertices)
@@ -140,8 +142,8 @@ class GraphsSolver:
         d = [float('inf')] * num_vertices
         d[src] = 0
 
-        # move pointer to src
-        start = next((v for v in topo_order if v == src))
+        # move pointer to src index in topo_order
+        start = next((i for i in range(len(topo_order)) if topo_order[i] == src))
         
         for i in range(start, num_vertices): 
             u = topo_order[i]
