@@ -47,6 +47,6 @@ class DivideConquerSolver:
                 key=lambda e: e[1] # weigh by subarray sum
             )
 
-        subarray_range, _ = subproblem(0, len(arr) - 1)
+        _, max_subarray_sum = subproblem(0, len(arr) - 1)
 
-        return subarray_range
+        return max_subarray_sum
