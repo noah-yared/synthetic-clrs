@@ -28,7 +28,7 @@ TEST_KADANE_INPUTS = [
 ]
 @pytest.mark.parametrize("test_input, expected_output", TEST_KADANE_INPUTS)
 def test_kadane(test_input, expected_output):
-    assert ProblemSolver.solve(Algorithm.KADANE, arr=test_input) == expected_output
+    assert ProblemSolver.solve(Algorithm.KADANE, array=test_input) == expected_output
 
 
 ############################
@@ -75,19 +75,20 @@ TEST_LCS_LENGTH_INPUTS = [
 @pytest.mark.parametrize("test_input, expected_output", TEST_LCS_LENGTH_INPUTS)
 def test_lcs_length(test_input, expected_output):
     a, b = test_input
-    lcs_length = ProblemSolver.solve(Algorithm.LCS_LENGTH, a=a, b=b)
+    lcs_length = ProblemSolver.solve(Algorithm.LCS_LENGTH, sequence_a=a, sequence_b=b, decimal_places=9)
     assert lcs_length == expected_output
 
 TEST_OPTIMAL_BST_INPUTS = [
     # single key
-    (((1/2,), (0.0, 1/2)), 1.5),
+    (((0.5,), (0.0, 0.5)), 1.5),
     # multiple keys
-    (((34/92, 8/92, 50/92), (0, 0, 0, 0)), 142/92),
+    (((0.37, 0.09, 0.54), (0, 0, 0, 0)), 1.55),
+
 ]
 @pytest.mark.parametrize("test_input, expected_output", TEST_OPTIMAL_BST_INPUTS)
 def test_optimal_bst(test_input, expected_output):
     ps, qs = test_input
-    optimal_bst_cost = ProblemSolver.solve(Algorithm.OPTIMAL_BST, ps=ps, qs=qs)
+    optimal_bst_cost = ProblemSolver.solve(Algorithm.OPTIMAL_BST, key_probabilities=ps, gap_probabilities=qs, decimal_places=2)
     assert_close(optimal_bst_cost, expected_output)
 
 
@@ -213,8 +214,8 @@ TEST_TREE_INPUTS = [
         # 0 <-> 1 <-> 2
         (
             [
-                ((0, 1), 1),
-                ((1, 2), 1),
+                (0, 1, 1),
+                (1, 2, 1),
             ],
             3,
             0
@@ -230,11 +231,11 @@ TEST_TREE_INPUTS = [
         # 2  0
         (
             [
-                ((4, 1), 1),
-                ((1, 2), 1),
-                ((4, 3), 1),
-                ((1, 2), 1),
-                ((1, 0), 1),
+                (4, 1, 1),
+                (1, 2, 1),
+                (4, 3, 1),
+                (1, 2, 1),
+                (1, 0, 1),
             ],
             5,
             4
@@ -245,13 +246,13 @@ TEST_TREE_INPUTS = [
 @pytest.mark.parametrize("test_input, expected_output", TEST_TREE_INPUTS)
 def test_bfs(test_input, expected_output):
     edges, num_vertices, src = test_input
-    parents = ProblemSolver.solve(Algorithm.BFS, edges=edges, num_vertices=num_vertices, src=src)
+    parents = ProblemSolver.solve(Algorithm.BFS, edge_list=edges, num_vertices=num_vertices, src=src)
     assert parents == expected_output
 
 @pytest.mark.parametrize("test_input, expected_output", TEST_TREE_INPUTS)
 def test_dfs(test_input, expected_output):
     edges, num_vertices, src = test_input
-    parents = ProblemSolver.solve(Algorithm.DFS, edges=edges, num_vertices=num_vertices, src=src)
+    parents = ProblemSolver.solve(Algorithm.DFS, edge_list=edges, num_vertices=num_vertices, src=src)
     assert parents == expected_output
 
 TEST_DAGS = [
@@ -261,9 +262,9 @@ TEST_DAGS = [
     # 2 <- 0 -> 1 -> 3
     (
         (
-            ((0, 1), 2),
-            ((0, 2), 3),
-            ((1, 3), 4),
+            (0, 1, 2),
+            (0, 2, 3),
+            (1, 3, 4),
         ),
         4,
         0
@@ -279,11 +280,11 @@ TEST_DAGS = [
     # | -> 3
     (
         (
-            ((0, 1), 3),
-            ((0, 2), 1),
-            ((0, 3), 5),
-            ((1, 3), 1),
-            ((2, 1), 1),
+            (0, 1, 3),
+            (0, 2, 1),
+            (0, 3, 5),
+            (1, 3, 1),
+            (2, 1, 1),
         ),
         4,
         0
@@ -292,11 +293,11 @@ TEST_DAGS = [
     # on the edge from 0 to 1
     (
         (
-            ((0, 1), -3),
-            ((0, 2), 1),
-            ((0, 3), 5),
-            ((1, 3), 1),
-            ((2, 1), 1),
+            (0, 1, -3),
+            (0, 2, 1),
+            (0, 3, 5),
+            (1, 3, 1),
+            (2, 1, 1),
         ),
         4,
         0
@@ -312,7 +313,7 @@ TOPOLOGICAL_ORDERINGS = [
 @pytest.mark.parametrize("test_input, expected_output", zip(TEST_DAGS, TOPOLOGICAL_ORDERINGS))
 def test_topological_sort(test_input, expected_output):
     edges, num_vertices, _ = test_input
-    topo_order = ProblemSolver.solve(Algorithm.TOPOLOGICAL_SORT, edges=edges, num_vertices=num_vertices)
+    topo_order = ProblemSolver.solve(Algorithm.TOPOLOGICAL_SORT, edge_list=edges, num_vertices=num_vertices)
     assert topo_order == expected_output
 
 DAG_SHORTEST_PATH_DISTANCES = [
@@ -324,7 +325,7 @@ DAG_SHORTEST_PATH_DISTANCES = [
 @pytest.mark.parametrize("test_input, expected_output", zip(TEST_DAGS, DAG_SHORTEST_PATH_DISTANCES))
 def test_dag_shortest_paths(test_input, expected_output):
     edges, num_vertices, src = test_input
-    distances = ProblemSolver.solve(Algorithm.DAG_SHORTEST_PATH, edges=edges, num_vertices=num_vertices, src=src)
+    distances = ProblemSolver.solve(Algorithm.DAG_SHORTEST_PATH, edge_list=edges, num_vertices=num_vertices, src=src)
     assert distances == expected_output
 
 TEST_GRAPH_INPUTS_ONLY_POSITIVE_WEIGHTS = [
@@ -336,10 +337,10 @@ TEST_GRAPH_INPUTS_ONLY_POSITIVE_WEIGHTS = [
     # 3 - 4
     (
         (
-            ((0, 1), 1),
-            ((1, 2), 2),
-            ((0, 3), 1),
-            ((3, 4), 3),
+            (0, 1, 1),
+            (1, 2, 2),
+            (0, 3, 1),
+            (3, 4, 3),
         ),
         5,
         0
@@ -351,41 +352,41 @@ TEST_GRAPH_INPUTS_ONLY_POSITIVE_WEIGHTS = [
     # 3 - 4 - 5
     (
         (
-            ((0, 1), 2),
-            ((1, 0), 2),
-            ((1, 2), 3),
-            ((2, 1), 3),
-            ((0, 3), 4),
-            ((3, 0), 4),
-            ((3, 4), 5),
-            ((4, 3), 5),
-            ((1, 4), 6),
-            ((4, 1), 6),
-            ((4, 5), 7),
-            ((5, 4), 7),
-            ((2, 5), 8),
-            ((5, 2), 8),
+            (0, 1, 2),
+            (1, 0, 2),
+            (1, 2, 3),
+            (2, 1, 3),
+            (0, 3, 4),
+            (3, 0, 4),
+            (3, 4, 5),
+            (4, 3, 5),
+            (1, 4, 6),
+            (4, 1, 6),
+            (4, 5, 7),
+            (5, 4, 7),
+            (2, 5, 8),
+            (5, 2, 8),
         ),
         6,
         0
     ),
 ]
 
-UNDIRECTED_GRAPH_SHORTEST_PATH_DISTANCES = [
+POSITIVE_WEIGHT_GRAPH_SHORTEST_PATH_DISTANCES = [
     [0],
     [0, 1, 3, 1, 4],
     [0, 2, 5, 4, 8, 13],
 ]
-@pytest.mark.parametrize("test_input, expected_output", zip(TEST_GRAPH_INPUTS_ONLY_POSITIVE_WEIGHTS, UNDIRECTED_GRAPH_SHORTEST_PATH_DISTANCES))
-def test_dijkstra_undirected(test_input, expected_output):
+@pytest.mark.parametrize("test_input, expected_output", zip(TEST_GRAPH_INPUTS_ONLY_POSITIVE_WEIGHTS, POSITIVE_WEIGHT_GRAPH_SHORTEST_PATH_DISTANCES))
+def test_dijkstra(test_input, expected_output):
     edges, num_vertices, src = test_input
-    distances = ProblemSolver.solve(Algorithm.DIJKSTRA, edges=edges, num_vertices=num_vertices, src=src)
+    distances = ProblemSolver.solve(Algorithm.DIJKSTRA, edge_list=edges, num_vertices=num_vertices, src=src)
     assert distances == expected_output
 
-@pytest.mark.parametrize("test_input, expected_output", zip(TEST_GRAPH_INPUTS_ONLY_POSITIVE_WEIGHTS, UNDIRECTED_GRAPH_SHORTEST_PATH_DISTANCES))
+@pytest.mark.parametrize("test_input, expected_output", zip(TEST_GRAPH_INPUTS_ONLY_POSITIVE_WEIGHTS, POSITIVE_WEIGHT_GRAPH_SHORTEST_PATH_DISTANCES))
 def test_bellman_ford_positive_weights(test_input, expected_output):
     edges, num_vertices, src = test_input
-    distances = ProblemSolver.solve(Algorithm.BELLMAN_FORD, edges=edges, num_vertices=num_vertices, src=src)
+    distances = ProblemSolver.solve(Algorithm.BELLMAN_FORD, edge_list=edges, num_vertices=num_vertices, src=src)
     assert distances == expected_output
 
 TEST_GRAPH_INPUTS_WITH_NEGATIVE_WEIGHTS = [
@@ -397,19 +398,19 @@ TEST_GRAPH_INPUTS_WITH_NEGATIVE_WEIGHTS = [
     # 3 - 4 - 5
     (
         (
-            ((0, 1), 2),
-            ((1, 0), 2),
-            ((1, 2), 7),
-            ((2, 1), 7),
-            ((0, 3), 4),
-            ((3, 0), 4),
-            ((3, 4), 5),
-            ((4, 3), 5),
-            ((1, 4), -10),
-            ((4, 5), 7),
-            ((5, 4), 7),
-            ((2, 5), 8),
-            ((5, 2), 8),
+            (0, 1, 2),
+            (1, 0, 2),
+            (1, 2, 7),
+            (2, 1, 7),
+            (0, 3, 4),
+            (3, 0, 4),
+            (3, 4, 5),
+            (4, 3, 5),
+            (1, 4, -10),
+            (4, 5, 7),
+            (5, 4, 7),
+            (2, 5, 8),
+            (5, 2, 8),
         ),
         6,
         0
@@ -422,7 +423,7 @@ NEGATIVE_WEIGHT_GRAPH_SHORTEST_PATH_DISTANCES = [
 @pytest.mark.parametrize("test_input, expected_output", zip(TEST_GRAPH_INPUTS_WITH_NEGATIVE_WEIGHTS, NEGATIVE_WEIGHT_GRAPH_SHORTEST_PATH_DISTANCES))
 def test_bellman_ford_negative_weights(test_input, expected_output):
     edges, num_vertices, src = test_input
-    distances = ProblemSolver.solve(Algorithm.BELLMAN_FORD, edges=edges, num_vertices=num_vertices, src=src)
+    distances = ProblemSolver.solve(Algorithm.BELLMAN_FORD, edge_list=edges, num_vertices=num_vertices, src=src)
     assert distances == expected_output
 
 
@@ -478,8 +479,8 @@ TEST_BINARY_SEARCH_INPUTS = [
 ]
 @pytest.mark.parametrize("test_input, expected_output", TEST_BINARY_SEARCH_INPUTS)
 def test_binary_search(test_input, expected_output):
-    arr, target = test_input
-    assert ProblemSolver.solve(Algorithm.BINARY_SEARCH, arr=arr, target=target) == expected_output
+    array, target = test_input
+    assert ProblemSolver.solve(Algorithm.BINARY_SEARCH, array=array, target=target) == expected_output
 
 TEST_MINIMUM_INPUTS = [
     # single element
@@ -491,8 +492,8 @@ TEST_MINIMUM_INPUTS = [
 ]
 @pytest.mark.parametrize("test_input, expected_output", TEST_MINIMUM_INPUTS)
 def test_minimum(test_input, expected_output):
-    arr = test_input
-    assert ProblemSolver.solve(Algorithm.MINIMUM, arr=arr) == expected_output
+    array = test_input
+    assert ProblemSolver.solve(Algorithm.MINIMUM, array=array) == expected_output
 
 
 #####################
@@ -524,5 +525,5 @@ SORTING_TEST_IDS = [f"{algo}_{i}" for i, (algo, *_) in enumerate(TEST_INPUTS_BY_
     ids=SORTING_TEST_IDS
 )
 def test_sort(sorting_algorithm, test_input, expected_output):
-    arr = test_input
-    assert ProblemSolver.solve(sorting_algorithm, arr=arr) == expected_output
+    array = test_input
+    assert ProblemSolver.solve(sorting_algorithm, array=array) == expected_output
