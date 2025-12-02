@@ -75,7 +75,7 @@ TEST_LCS_LENGTH_INPUTS = [
 @pytest.mark.parametrize("test_input, expected_output", TEST_LCS_LENGTH_INPUTS)
 def test_lcs_length(test_input, expected_output):
     a, b = test_input
-    _, lcs_length = ProblemSolver.solve(Algorithm.LCS_LENGTH, a=a, b=b)
+    lcs_length = ProblemSolver.solve(Algorithm.LCS_LENGTH, a=a, b=b)
     assert lcs_length == expected_output
 
 TEST_OPTIMAL_BST_INPUTS = [
@@ -87,7 +87,7 @@ TEST_OPTIMAL_BST_INPUTS = [
 @pytest.mark.parametrize("test_input, expected_output", TEST_OPTIMAL_BST_INPUTS)
 def test_optimal_bst(test_input, expected_output):
     ps, qs = test_input
-    _, optimal_bst_cost = ProblemSolver.solve(Algorithm.OPTIMAL_BST, ps=ps, qs=qs)
+    optimal_bst_cost = ProblemSolver.solve(Algorithm.OPTIMAL_BST, ps=ps, qs=qs)
     assert_close(optimal_bst_cost, expected_output)
 
 

@@ -1,6 +1,6 @@
 class GeometrySolver:
     @staticmethod
-    def graham_scan(xs, ys):
+    def graham_scan(xs, ys, **_):
         points = list(zip(xs, ys))
 
         if not points:
@@ -69,7 +69,7 @@ class GeometrySolver:
             
     
     @staticmethod
-    def jarvis_march(xs, ys):
+    def jarvis_march(xs, ys, **_):
         points = list(zip(xs, ys))
 
         if not points:
@@ -133,7 +133,7 @@ class GeometrySolver:
 
 
     @staticmethod
-    def segment_intersect(xs, ys):
+    def segment_intersect(xs, ys, **_):
         """
         Define line segment s_0 by endpoints p[0], p[1]
         and line segment s_1 by endpoints p[2], p[3],

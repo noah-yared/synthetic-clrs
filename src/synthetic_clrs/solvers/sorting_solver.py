@@ -4,20 +4,20 @@ class SortingSolver:
     for sorting algorithms for simplicity.
     """
     @staticmethod
-    def bubble_sort(arr):
-        return list(sorted(arr))
+    def bubble_sort(array, **_):
+        return list(sorted(array))
 
 
     @staticmethod
-    def heapsort(arr):
-        return list(sorted(arr))
+    def heapsort(array, **_):
+        return list(sorted(array))
 
 
     @staticmethod
-    def insertion_sort(arr):
-        return list(sorted(arr))
+    def insertion_sort(array, **_):
+        return list(sorted(array))
 
 
     @staticmethod
-    def quicksort(arr):
-        return list(sorted(arr))
+    def quicksort(array, **_):
+        return list(sorted(array))

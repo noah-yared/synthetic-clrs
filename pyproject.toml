@@ -9,7 +9,9 @@ description = "Generate synthetic algorithm problems inspired by CLRS"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "numpy>=2.0" 
+    "numpy>=2.0",
+    "pandas>=2.0",
+    "pyarrow>=22.0",
 ]
 authors = [
     {name = "Noah Yared"}

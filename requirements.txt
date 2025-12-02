@@ -1,6 +1,13 @@
 iniconfig==2.3.0
 numpy==2.3.5
 packaging==25.0
+pandas==2.3.3
 pluggy==1.6.0
+pyarrow==22.0.0
 Pygments==2.19.2
 pytest==9.0.1
+python-dateutil==2.9.0.post0
+pytz==2025.2
+six==1.17.0
+-e git+https://github.com/noah-yared/synthetic-clrs@d87e04e708f805b78e31be32a4250ae42bf629b4#egg=synthetic_clrs
+tzdata==2025.2

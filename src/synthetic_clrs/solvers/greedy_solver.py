@@ -1,6 +1,6 @@
 class GreedySolver:
     @staticmethod
-    def task_scheduling(deadlines, weights):
+    def task_scheduling(deadlines, weights, **_):
         tasks = list(zip(deadlines, weights))
         sorted_task_ids = list(sorted(range(len(tasks)), key=lambda i: tasks[i][1], reverse=True))
 
@@ -23,7 +23,7 @@ class GreedySolver:
 
 
     @staticmethod
-    def activity_selection(start, finish):
+    def activity_selection(start, finish, **_):
         times = list(zip(start, finish))
         sorted_activity_ids = list(sorted(range(len(times)), key=lambda i: times[i][1]))
         selected = [0] * len(times)

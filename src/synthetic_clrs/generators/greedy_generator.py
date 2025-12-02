@@ -1,15 +1,18 @@
-from .problem_generator import ProblemGenerator
+from ..utils import Rng
+from ..algorithms import Algorithm
 
-class GreedyGenerator(ProblemGenerator):
-    def __init__(self, min_input_size=5, max_input_size=15, min_time=0, max_time=1000, min_weight=1, max_weight=10, seed=None):
-        super().__init__(seed)
+class GreedyGenerator:
+    def __init__(self, rng=None, min_input_size=5, max_input_size=15, min_time=0, max_time=10, min_weight=1, max_weight=10, seed=None):
+        self.rng = rng if rng is not None else Rng(seed)
         self.min_time = min_time
         self.max_time = max_time
         self.min_input_size = min_input_size
         self.max_input_size = max_input_size
+        self.min_weight = min_weight
+        self.max_weight = max_weight
 
 
-    def _generate_activity_selection_prob(self):
+    def generate_activity_selection_problem(self):
         num_tasks = self.rng.gen_int(self.min_input_size, self.max_input_size)
 
         # generate start times
@@ -21,26 +24,25 @@ class GreedyGenerator(ProblemGenerator):
 
         return {
             "start": start_times,
-            "finish": finish_times
+            "finish": finish_times,
+            "task": "Select the maximum number of non-overlapping activities"
         }
 
 
-    def _generate_task_scheduling_prob(self):
+    def generate_task_scheduling_problem(self):
         num_tasks = self.rng.gen_int(self.min_input_size, self.max_input_size)
         # generate deadlines for tasks
         deadlines = self.rng.gen_int_array(num_tasks, self.min_time, self.max_time)
         weights = self.rng.gen_int_array(num_tasks, self.min_weight, self.max_weight)
         return {
             "deadlines": deadlines,
-            "weights": weights
+            "weights": weights,
+            "task": "Schedule tasks to maximize the total weight of the tasks scheduled by their deadline"
         }  
 
-    
-    def generate(self, id):
-        generator_fns = [
-            self._generate_activity_selection_prob,
-            self._generate_task_scheduling_prob,
-        ]
-        assert id >= 0 and id < len(generator_fns), "id out of range!"
-        return generator_fns[id]()
 
+    def generate_problem(self, algorithm: Algorithm, **kwargs):
+        return {
+            Algorithm.TASK_SCHEDULING: self.generate_task_scheduling_problem,
+            Algorithm.ACTIVITY_SELECTION: self.generate_activity_selection_problem,
+        }[algorithm](**kwargs)

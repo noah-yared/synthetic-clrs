@@ -1,6 +1,6 @@
 class StringsSolver:
     @staticmethod
-    def kmp_matcher(text, pattern):
+    def kmp_matcher(text, pattern, **_):
         if not pattern:
             raise ValueError(f"Pattern {pattern} is empty!")
 
@@ -45,7 +45,7 @@ class StringsSolver:
 
 
     @staticmethod
-    def naive_string_matcher(text, pattern):
+    def naive_string_matcher(text, pattern, **_):
         if not pattern:
             raise ValueError(f"Pattern {pattern} is empty!")
 

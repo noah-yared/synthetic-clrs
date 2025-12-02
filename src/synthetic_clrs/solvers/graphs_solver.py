@@ -1,14 +1,13 @@
-from collections import defaultdict
 from queue import Queue, LifoQueue
 import heapq
 
 class GraphsSolver:
     @staticmethod
-    def _construct_graph_from_input(edges, num_vertices, keep_weights=True):
+    def _construct_graph_from_input(edge_list, num_vertices, keep_weights=True):
         """
         Vertices are list(range(num_vertices)).
-        Edges is a list of tuples of the form:
-        ((u, v), w), which denotes an edge from u
+        Edge list is a list of tuples of the form:
+        (u, v, w), which denotes an edge from u
         to v with weight w.
         
         Returns an adjacency list matching the graph,
@@ -17,22 +16,23 @@ class GraphsSolver:
         just u -> v.
         """
         graph = [[] for _ in range(num_vertices)]
-        for (u, v), w in edges:  
+        for u, v, w in edge_list:  
             graph[u].append(((v, w) if keep_weights else v))
 
         return graph
 
 
+
     @staticmethod
-    def _compute_topological_ordering(edges, num_vertices):
+    def _compute_topological_ordering(edge_list, num_vertices):
         """
         Returns topological ordering if one exists, otherwise
         returns -1.
         """
-        graph = GraphsSolver._construct_graph_from_input(edges, num_vertices, keep_weights=False)
+        graph = GraphsSolver._construct_graph_from_input(edge_list, num_vertices, keep_weights=False)
 
         indegrees = [0] * num_vertices
-        for (u, v), _ in edges:
+        for u, v, _ in edge_list:
             indegrees[v] += 1
 
         visited = [False] * num_vertices
@@ -60,41 +60,46 @@ class GraphsSolver:
 
 
     @staticmethod
-    def articulation_points(edges, num_vertices):
+    def articulation_points(edge_list, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
     @staticmethod
-    def bellman_ford(edges, num_vertices, src):
+    def bellman_ford(edge_list, num_vertices, src, **_):
         """
-        Prefer graphs without negative cycles to
+        Compute shortest path distances to vertices from
+        src if reachable. Output is list d, where 
+        d[v] = min path distance from src to v (float('inf')
+        if v is not reachable).
+        If there is a negative cycle, return -1. Otherwise,
+        return d.
+
+        Note: Prefer graphs without negative cycles to
         avoid issues with encoding infinite
         distances
         """
         d = [float('inf')] * num_vertices
         d[src] = 0
 
-        # num_vertices roundes of edge relaxation
+        # num_vertices-1 rounds of edge relaxation
         for _ in range(1, num_vertices):
-            for (u, v), w in edges:
+            for u, v, w in edge_list:
                 d[v] = min(d[u] + w, d[v])
 
-        # make sure no negative cycles occur
-        # otherwise return "-inf"
-        for (u, v), w in edges:
+        for u, v, w in edge_list:
             if d[v] > d[u] + w:
                 # negative cycle detected
-                d[v] = float("-inf") 
+                return -1
         
         return d
 
 
-    def bfs(edges, num_vertices, src):
+    def bfs(edge_list, num_vertices, src, **_):
         """
         For deteministic traversal, input graph
         should be a tree.
         """
-        graph = GraphsSolver._construct_graph_from_input(edges, num_vertices, keep_weights=False)
+        graph = GraphsSolver._construct_graph_from_input(edge_list, num_vertices, keep_weights=False)
 
         visited = [False] * num_vertices
         parents = [-1] * num_vertices
@@ -118,16 +123,19 @@ class GraphsSolver:
         return parents
 
 
-    def bridges(edges, num_vertices):
+    def bridges(edges, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def dag_shortest_paths(edges, num_vertices, src):
+    def dag_shortest_paths(edge_list, num_vertices, src, **_):
         """
         Input graph must be a directed, acyclic graph (dag).
         """
-        graph = GraphsSolver._construct_graph_from_input(edges, num_vertices)
-        topo_order = GraphsSolver._compute_topological_ordering(edges, num_vertices)
+        graph = GraphsSolver._construct_graph_from_input(edge_list, num_vertices)
+        topo_order = GraphsSolver._compute_topological_ordering(edge_list, num_vertices)
+
+        if topo_order == -1:
+            raise ValueError("Input graph is not a directed, acyclic graph (dag)")
 
         d = [float('inf')] * num_vertices
         d[src] = 0
@@ -144,12 +152,12 @@ class GraphsSolver:
         return d
 
 
-    def dfs(edges, num_vertices, src):
+    def dfs(edge_list, num_vertices, src, **_):
         """
         For deterministic traversal, input graph
         should be a tree.
         """
-        graph = GraphsSolver._construct_graph_from_input(edges, num_vertices, keep_weights=False)
+        graph = GraphsSolver._construct_graph_from_input(edge_list, num_vertices, keep_weights=False)
 
         visited = [False] * num_vertices
         parents = [-1] * num_vertices
@@ -157,7 +165,7 @@ class GraphsSolver:
         visited[src] = True
         parents[src] = src
         
-        # initialize queue with sorce
+        # initialize stack with src
         stack = LifoQueue(maxsize=0)
         stack.put(src)
 
@@ -173,13 +181,13 @@ class GraphsSolver:
         return parents
 
 
-    def dijkstra(edges, num_vertices, src):
+    def dijkstra(edge_list, num_vertices, src, **_):
         """
         Prefer graphs where src can reach all other
         vertices to avoid issues with encoding infinite
         distances
         """
-        graph = GraphsSolver._construct_graph_from_input(edges, num_vertices)
+        graph = GraphsSolver._construct_graph_from_input(edge_list, num_vertices)
 
         d = [float('inf')] * num_vertices
         d[src] = 0
@@ -200,21 +208,25 @@ class GraphsSolver:
         return d
 
 
-    def floyd_warshall(edges, num_vertices):
+    def floyd_warshall(edge_list, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def mst_kruskal(edges, num_vertices):
+    def mst_kruskal(edge_list, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def mst_prim(edges, num_vertices):
+    def mst_prim(edge_list, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def scc(edges, num_vertices):
+    def scc(edge_list, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
-    def topological_sort(edges, num_vertices):
-        return GraphsSolver._compute_topological_ordering(edges, num_vertices)
+    def topological_sort(edge_list, num_vertices, **_):
+        """
+        Returns a topological ordering of vertices if one exists, otherwise
+        returns -1.
+        """
+        return GraphsSolver._compute_topological_ordering(edge_list, num_vertices)

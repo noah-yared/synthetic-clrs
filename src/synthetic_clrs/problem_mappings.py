@@ -58,3 +58,9 @@ ALGORITHMS_BY_CATEGORY = MappingProxyType({
         Algorithm.OPTIMAL_BST
     ],
 })
+
+ALGORITHM_TO_CATEGORY = MappingProxyType({
+    algorithm: category
+    for category, algorithms in ALGORITHMS_BY_CATEGORY.items()
+    for algorithm in algorithms
+})

@@ -1,8 +1,9 @@
-from .problem_generator import ProblemGenerator
+from ..utils import Rng
+from ..algorithms import Algorithm
 
-class DynamicProgrammingGenerator(ProblemGenerator):
-    def __init__(self, min_sequence_length=5, max_sequence_length=15, min_char=0, max_char=3, min_keys=2, max_keys=5, seed=None):
-        super().__init__(seed)
+class DynamicProgrammingGenerator:
+    def __init__(self, rng=None, min_sequence_length=2, max_sequence_length=8, min_char=0, max_char=3, min_keys=2, max_keys=5, seed=None):
+        self.rng = rng if rng is not None else Rng(seed)
         self.min_sequence_length = min_sequence_length
         self.max_sequence_length = max_sequence_length
         self.min_char = min_char
@@ -11,35 +12,40 @@ class DynamicProgrammingGenerator(ProblemGenerator):
         self.max_keys = max_keys
 
 
-    def _gen_matrix_chain_prob(self):
+    def generate_matrix_chain_problem(self):
         raise NotImplementedError("omitting this algorithm...")
 
 
-    def _gen_lcs_length_prob(self):
+    def generate_lcs_length_problem(self):
         seq_length = self.rng.gen_int(self.min_sequence_length, self.max_sequence_length)
-        string_a = self.rng.gen_int_array(seq_length, self.min_char, self.max_char)
-        string_b = self.rng.gen_int_array(seq_length, self.min_char, self.max_char)
-        return string_a, string_b
+        a = self.rng.gen_int_array(seq_length, self.min_char, self.max_char)
+        b = self.rng.gen_int_array(seq_length, self.min_char, self.max_char)
+        return {
+            "sequence_a": a,
+            "sequence_b": b,
+            "task": "Find the length of the longest common subsequence of the two sequences"
+        }
 
 
-    def _gen_optimal_bst_prob(self):
+    def generate_optimal_bst_problem(self):
         num_keys = self.rng.gen_int(self.min_keys, self.max_keys)
-        # be careful that n_decimals is large enough relative
+        # make sure n_decimals is large enough relative
         # to num_keys (so that distribution is not too sparse)
-        random_prob_dist = self.rng.gen_random_discrete_distribution(2 * num_keys + 1, n_decimals=2)
+        import math
+        n_decimals = math.floor(math.log10(num_keys)) + 2
+        random_prob_dist = self.rng.gen_random_discrete_distribution(2 * num_keys + 1, n_decimals=n_decimals)
         ps = random_prob_dist[1::2]
         qs = random_prob_dist[::2]
         return {
-            "ps": ps,
-            "qs": qs
+            "key_probabilities": ps,
+            "gap_probabilities": qs,
+            "decimal_places": n_decimals,
+            "task": "Compute the minimum expected search cost for an optimal binary search tree given key and gap probabilities"
         }
+ 
 
-    
-    def generate(self, id):
-        generator_fns = [
-            self._gen_lcs_length_prob,
-            self._gen_optimal_bst_prob,
-            # self._gen_matrix_chain_prob,
-        ]
-        assert 0 <= id < len(generator_fns), "id is out of range!"
-        return generator_fns[id]()
+    def generate_problem(self, algorithm: Algorithm, **kwargs):
+        return {
+            Algorithm.LCS_LENGTH: self.generate_lcs_length_problem,
+            Algorithm.OPTIMAL_BST: self.generate_optimal_bst_problem,
+        }[algorithm](**kwargs)

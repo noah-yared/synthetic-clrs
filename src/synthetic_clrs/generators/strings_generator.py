@@ -1,15 +1,16 @@
-from .problem_generator import ProblemGenerator
+from ..utils import Rng
+from ..algorithms import Algorithm
 
-class StringsGenerator(ProblemGenerator):
-    def __init__(self, min_string_length=5, max_string_length=20, min_char=0, max_char=3, seed=None):
-        super().__init__(seed)
+class StringsGenerator:
+    def __init__(self, rng=None, min_string_length=5, max_string_length=10, min_char=0, max_char=3, seed=None):
+        self.rng = rng if rng is not None else Rng(seed)
         self.min_string_length = min_string_length
         self.max_string_length = max_string_length
         self.min_char = min_char
         self.max_char = max_char
 
 
-    def _generate_string_matcher_prob(self):
+    def _generate_string_matcher_problem(self):
         text_length = self.rng.gen_int(self.min_string_length, self.max_string_length)
         pattern_length = self.rng.gen_int(self.min_string_length, text_length)
 
@@ -18,9 +19,21 @@ class StringsGenerator(ProblemGenerator):
 
         return {
             "text": text,
-            "pattern": pattern
+            "pattern": pattern,
+            "task": "Find the index of the first substring of text that matches pattern"
         }
-        
 
-    def generate(self):
-        return self._generate_string_matcher_prob()
+
+    def generate_kmp_matcher_problem(self):
+        return self._generate_string_matcher_problem()
+
+    
+    def generate_naive_string_matcher_problem(self):
+        return self._generate_string_matcher_problem()
+
+
+    def generate_problem(self, algorithm: Algorithm, **kwargs):
+        return {
+            Algorithm.KMP_MATCHER: self.generate_kmp_matcher_problem,
+            Algorithm.NAIVE_STRING_MATCHER: self.generate_naive_string_matcher_problem,
+        }[algorithm](**kwargs)
