@@ -20,7 +20,7 @@ class CLRSDataset:
         self.save_dir = self._ensure_dir(save_dir or "datasets")
 
 
-    def _compact_json(self, obj, flag=re.DOTALL):
+    def _compact_json(self, obj):
         # make list items space-separated instead of newline-separated
         def collapse_array(match):
             return re.sub(r"\s+", " ", match.group(0), flags=re.DOTALL)
