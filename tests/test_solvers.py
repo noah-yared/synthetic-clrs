@@ -1,5 +1,4 @@
 import pytest
-import itertools
 
 from synthetic_clrs import (
     Algorithm,
