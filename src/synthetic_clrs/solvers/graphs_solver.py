@@ -94,6 +94,7 @@ class GraphsSolver:
         return d
 
 
+    @staticmethod
     def bfs(edge_list, num_vertices, src, **_):
         """
         For deteministic traversal, input graph
@@ -123,10 +124,12 @@ class GraphsSolver:
         return parents
 
 
+    @staticmethod
     def bridges(edges, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
+    @staticmethod
     def dag_shortest_paths(edge_list, num_vertices, src, **_):
         """
         Input graph must be a directed, acyclic graph (dag).
@@ -154,6 +157,7 @@ class GraphsSolver:
         return d
 
 
+    @staticmethod
     def dfs(edge_list, num_vertices, src, **_):
         """
         For deterministic traversal, input graph
@@ -183,6 +187,7 @@ class GraphsSolver:
         return parents
 
 
+    @staticmethod
     def dijkstra(edge_list, num_vertices, src, **_):
         """
         Prefer graphs where src can reach all other
@@ -210,22 +215,27 @@ class GraphsSolver:
         return d
 
 
+    @staticmethod
     def floyd_warshall(edge_list, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
+    @staticmethod
     def mst_kruskal(edge_list, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
+    @staticmethod
     def mst_prim(edge_list, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
+    @staticmethod
     def scc(edge_list, num_vertices, **_):
         raise NotImplementedError("omitting this algorithm for now...")
 
 
+    @staticmethod
     def topological_sort(edge_list, num_vertices, **_):
         """
         Returns a topological ordering of vertices if one exists, otherwise
