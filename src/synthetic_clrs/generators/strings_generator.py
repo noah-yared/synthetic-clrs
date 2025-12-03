@@ -2,7 +2,7 @@ from ..utils import Rng
 from ..algorithms import Algorithm
 
 class StringsGenerator:
-    def __init__(self, rng=None, min_string_length=5, max_string_length=10, min_char=0, max_char=3, seed=None):
+    def __init__(self, rng=None, min_string_length=3, max_string_length=8, min_char=0, max_char=3, seed=None):
         self.rng = rng if rng is not None else Rng(seed)
         self.min_string_length = min_string_length
         self.max_string_length = max_string_length

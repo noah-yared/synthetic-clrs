@@ -2,7 +2,7 @@ from ..utils import Rng
 from ..algorithms import Algorithm
 
 class SearchGenerator:
-    def __init__(self, rng=None, min_num_elements=10, max_num_elements=32, min_element=-1000, max_element=1000, seed=None):
+    def __init__(self, rng=None, min_num_elements=5, max_num_elements=15, min_element=-100, max_element=100, seed=None):
         self.rng = rng if rng is not None else Rng(seed)
         self.min_num_elements = min_num_elements
         self.max_num_elements = max_num_elements

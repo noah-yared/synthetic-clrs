@@ -2,7 +2,7 @@ from ..utils import Rng
 from ..algorithms import Algorithm
 
 class GreedyGenerator:
-    def __init__(self, rng=None, min_input_size=5, max_input_size=15, min_time=0, max_time=10, min_weight=1, max_weight=10, seed=None):
+    def __init__(self, rng=None, min_input_size=5, max_input_size=10, min_time=0, max_time=10, min_weight=1, max_weight=10, seed=None):
         self.rng = rng if rng is not None else Rng(seed)
         self.min_time = min_time
         self.max_time = max_time

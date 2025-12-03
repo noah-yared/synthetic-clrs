@@ -2,7 +2,7 @@ from ..utils import Rng
 from ..algorithms import Algorithm
 
 class GeometryGenerator:
-    def __init__(self, rng=None, min_num_points=5, max_num_points=20, min_coordinate=-10, max_coordinate=10, seed=None):
+    def __init__(self, rng=None, min_num_points=5, max_num_points=8, min_coordinate=-10, max_coordinate=10, seed=None):
         self.rng = rng if rng is not None else Rng(seed)
         self.min_num_points = min_num_points
         self.max_num_points = max_num_points
