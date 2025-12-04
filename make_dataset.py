@@ -66,4 +66,3 @@ class CLRSDataset:
 if __name__ == "__main__":
     dataset = CLRSDataset()
     dataset.generate(num_probs_per_algo=100, save_file="synthetic_clrs_dataset.json")
-    dataset.load(save_file="synthetic_clrs_dataset.json")
